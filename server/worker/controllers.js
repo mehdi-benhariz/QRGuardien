@@ -82,7 +82,7 @@ exports.signin = (req, res) => {
   let { phone, password } = req.body;
   let errors = [];
 
-  if (!phone) errors.push({ email: "required" });
+  if (!phone) errors.push({ phone: "required" });
   if (!phoneRegexp.test(phone)) errors.push({ phone: "invalid" });
   if (!password) errors.push({ passowrd: "required" });
 

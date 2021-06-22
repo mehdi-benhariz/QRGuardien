@@ -1,5 +1,8 @@
+import 'package:client/utils/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'home.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -11,6 +14,21 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  void handleLogin() async {
+    var phone = _phoneController.text;
+    var password = _passwordController.text;
+    var jwt = await attemptLogIn(phone, password);
+    print("login");
+
+    if (jwt != "") {
+      storage.write(key: "token", value: jwt);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+    } else
+      displayDialog(context, "An Error Occurred",
+          "No account was found matching that username and password");
+  }
+
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
@@ -126,9 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   Spacer(),
                   InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/');
-                    },
+                    onTap: handleLogin,
                     child: Container(
                       height: 45,
                       width: MediaQuery.of(context).size.width / 1.2,
@@ -145,18 +161,13 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextButton.styleFrom(
                             primary: Colors.red, // foreground
                           ),
-                          onPressed: () {},
+                          onPressed: handleLogin,
                           child: Text(
                             'Login'.toUpperCase(),
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
                           ),
-
-                          //   color: Colors.blueAccent,
-                          //   textColor: Colors.white,
-
-                          // ),
                         ),
                       ),
                     ),

@@ -1,6 +1,23 @@
+import 'package:client/utils/auth.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  void handleLogOut() async {
+    bool res = await logout();
+    if (res) {
+      storage.delete(key: "token");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+    } else
+      displayDialog(context, "impossible to log out!",
+          "it seems there was an error when trying ot log out \n please verify your internet connection and try again");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,64 +27,68 @@ class HomePage extends StatelessWidget {
             UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
-                child: Icon(Icons.person,size: 50.0,),
+                child: Icon(
+                  Icons.person,
+                  size: 50.0,
+                ),
               ),
               accountName: Text('User Name'),
               accountEmail: Text('examlpe@gmail.com'),
             ),
             ListTile(
               leading: CircleAvatar(
-                child: Icon(Icons.person_outline,
-                color: Colors.white,
-                size: 30.0,
+                child: Icon(
+                  Icons.person_outline,
+                  color: Colors.white,
+                  size: 30.0,
                 ),
               ),
               title: Text("Profile Settings"),
-              onTap: (){
-
-              },
+              onTap: () {},
             ),
             ListTile(
               leading: CircleAvatar(
-                child: Icon(Icons.settings,
-                color: Colors.white,
-                size: 30.0,
+                child: Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                  size: 30.0,
                 ),
               ),
               title: Text("Settings"),
-              onTap: (){
-
-              },
+              onTap: () {},
             ),
             Divider(),
             ListTile(
               leading: CircleAvatar(
-                child: Icon(Icons.help_outline,
-                color: Colors.white,
-                size: 30.0,
+                child: Icon(
+                  Icons.help_outline,
+                  color: Colors.white,
+                  size: 30.0,
                 ),
               ),
               title: Text("About us"),
-              onTap: (){
-              },
+              onTap: () {},
             ),
             ListTile(
               leading: CircleAvatar(
-                child: Icon(Icons.cached,
-                color: Colors.white,
-                size: 30.0,
+                child: Icon(
+                  Icons.cached,
+                  color: Colors.white,
+                  size: 30.0,
                 ),
               ),
               title: Text("Recenceter"),
-              onTap: (){
+              onTap: () {
                 Navigator.pushNamed(context, '/login');
               },
             ),
             ListTile(
+              onTap: handleLogOut,
               leading: CircleAvatar(
-                child: Icon(Icons.exit_to_app,
-                color: Colors.white,
-                size: 30.0,
+                child: Icon(
+                  Icons.exit_to_app,
+                  color: Colors.white,
+                  size: 30.0,
                 ),
               ),
               title: Text("Logout"),
@@ -75,30 +96,28 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-
       appBar: AppBar(
         title: Text("Home Page"),
         centerTitle: true,
       ),
-
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xff6bceff),
-        onPressed: () { 
-        },
-        child: Icon(Icons.add,color:Colors.white),
+        onPressed: () {},
+        child: Icon(Icons.add, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home,color: Color(0xff6bceff),),
-            title: Text('Home',style: TextStyle(
+            icon: Icon(
+              Icons.home,
               color: Color(0xff6bceff),
-            ),),
+            ),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history),
-            title: Text('Historique'),
+            label: 'Historique',
           ),
         ],
       ),
@@ -109,19 +128,26 @@ class HomePage extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              borderRadius:  BorderRadius.all(Radius.circular(50)),
+              borderRadius: BorderRadius.all(Radius.circular(50)),
             ),
             child: ListTile(
               leading: Icon(Icons.event_available),
               title: Text("Acheter un Cadeau"),
-              trailing: Text("-200",style: TextStyle(color: Colors.red),),
-              subtitle: Text("Acheter un Cadeau pour l'anniversaire de mon amis"),
+              trailing: Text(
+                "-200",
+                style: TextStyle(color: Colors.red),
+              ),
+              subtitle:
+                  Text("Acheter un Cadeau pour l'anniversaire de mon amis"),
             ),
           ),
           ListTile(
             leading: Icon(Icons.event_available),
             title: Text("La bourse"),
-            trailing: Text("+400",style: TextStyle(color: Colors.green),),
+            trailing: Text(
+              "+400",
+              style: TextStyle(color: Colors.green),
+            ),
             subtitle: Text("La bourse de December..."),
           ),
         ],

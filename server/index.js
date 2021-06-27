@@ -36,6 +36,7 @@ app.use(
   })
 );
 app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "192.168.1.5");
   res.header("Access-Control-Allow-Origin", "*");
 
   res.header(

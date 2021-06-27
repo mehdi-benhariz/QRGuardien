@@ -1,3 +1,4 @@
+import 'package:client/screens/login.dart';
 import 'package:client/utils/auth.dart';
 import 'package:flutter/material.dart';
 
@@ -8,12 +9,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   void handleLogOut() async {
-    bool res = await logout();
-    if (res) {
-      storage.delete(key: "token");
+    bool res = logout();
+    if (res)
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
-    } else
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    else
       displayDialog(context, "impossible to log out!",
           "it seems there was an error when trying ot log out \n please verify your internet connection and try again");
   }

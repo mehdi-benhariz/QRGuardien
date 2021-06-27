@@ -1,3 +1,5 @@
+import 'package:client/screens/home.dart';
+import 'package:client/utils/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,6 +20,25 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _passwordConfirmationController =
       TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+
+  void handleSignUp() async {
+    var name = _nameController.text;
+
+    var phone = _phoneController.text;
+    var password = _passwordController.text;
+    var passwordConfirmation = _passwordConfirmationController.text;
+
+    var jwt = await attemptSignUp(name, phone, password, passwordConfirmation);
+    print(jwt);
+    if (jwt != "") {
+      storage.write(key: "token", value: jwt);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+    } else
+      displayDialog(
+          context, "An Error Occurred", "please verify your data or internet");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -158,9 +179,7 @@ class _SignupPageState extends State<SignupPage> {
                     height: 15,
                   ),
                   InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, '/');
-                    },
+                    onTap: handleSignUp,
                     child: Container(
                       height: 45,
                       width: MediaQuery.of(context).size.width / 1.2,

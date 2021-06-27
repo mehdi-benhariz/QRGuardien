@@ -3,6 +3,7 @@ const Worker = require("../worker/model");
 
 exports.auth = async (req, res, next) => {
   const { token } = req.cookies;
+  console.log(req.cookies);
   try {
     if (token) {
       const decode = await jwt.verify(token, process.env.TOKEN_SECRET);

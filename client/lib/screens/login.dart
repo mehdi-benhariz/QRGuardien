@@ -18,8 +18,7 @@ class _LoginPageState extends State<LoginPage> {
     var phone = _phoneController.text;
     var password = _passwordController.text;
     var jwt = await attemptLogIn(phone, password);
-    print("login");
-
+    print(jwt);
     if (jwt != "") {
       storage.write(key: "token", value: jwt);
       Navigator.push(

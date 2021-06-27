@@ -11,7 +11,7 @@ const maxAge = 3600 * 24 * 10;
 const findError = (req) => {
   var errors = [];
   let { name, phone, password, password_confirmation } = req.body;
-  console.log(req);
+
   if (!name) errors.push({ name: "required" });
   if (!phone) errors.push({ phone: "required" });
 
@@ -56,10 +56,17 @@ exports.signup = (req, res, next) => {
             worker
               .save()
               .then((response) => {
-                res.status(200).json({
-                  success: true,
-                  result: response,
-                });
+                let access_token = createJWT(worker.phone, worker._id, 3600);
+                res
+                  .status(200)
+                  .cookie("token", access_token, {
+                    httpOnly: true,
+                    maxAge: maxAge * 1000,
+                  })
+                  .json({
+                    success: true,
+                    message: response,
+                  });
               })
               .catch((err) => {
                 res.status(400).json({
@@ -90,11 +97,11 @@ exports.signin = (req, res) => {
 
   Worker.findOne({ phone: phone })
     .then((worker) => {
-      if (!worker) {
+      if (!worker)
         return res.status(400).json({
           errors: [{ worker: "not found" }],
         });
-      } else {
+      else {
         console.log(worker);
         bcrypt
           .compare(password, worker.password)
@@ -109,10 +116,9 @@ exports.signin = (req, res) => {
               access_token,
               process.env.TOKEN_SECRET,
               (err, decoded) => {
-                if (err) {
-                  res.status(400).json({ erros: err });
-                }
-                if (decoded) {
+                if (err) res.status(400).json({ erros: err });
+
+                if (decoded)
                   return res
                     .status(200)
                     .cookie("token", access_token, {
@@ -123,18 +129,13 @@ exports.signin = (req, res) => {
                       success: true,
                       message: worker,
                     });
-                }
               }
             );
           })
-          .catch((err) => {
-            res.status(400).json({ erros: err });
-          });
+          .catch((err) => res.status(400).json({ erros: err }));
       }
     })
-    .catch((err) => {
-      res.status(400).json({ erros: err });
-    });
+    .catch((err) => res.status(400).json({ erros: err }));
 };
 //loggin out
 exports.logOut = (req, res) => {

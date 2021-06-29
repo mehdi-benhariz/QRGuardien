@@ -1,6 +1,9 @@
+import 'package:client/api/shift.dart';
 import 'package:client/screens/login.dart';
-import 'package:client/utils/auth.dart';
+import 'package:client/api/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -8,14 +11,50 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String qrCode = 'Unknown';
+  bool submitted = true;
   void handleLogOut() async {
-    bool res = logout();
+    bool res = await logout();
     if (res)
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => LoginPage()));
     else
       displayDialog(context, "impossible to log out!",
           "it seems there was an error when trying ot log out \n please verify your internet connection and try again");
+  }
+
+  Future<void> scanQRCode() async {
+    try {
+      final qrCode = await FlutterBarcodeScanner.scanBarcode(
+        '#ff6666',
+        'Cancel',
+        true,
+        ScanMode.QR,
+      );
+      print(qrCode);
+      // ignore: nullable_type_in_catch_clause
+    } on PlatformException {
+      qrCode = 'Failed to get platform version.';
+    }
+    if (!mounted) return;
+
+    setState(() {
+      this.qrCode = qrCode;
+    });
+  }
+
+  Future<bool> submitShift() async {
+    print("test");
+    try {
+      bool res = await attempSubmitShift();
+      setState(() => submitted = res);
+      if (!res)
+        displayDialog(context, "error", "can't store or scan the code!");
+    } catch (e) {
+      print(e);
+    }
+
+    return true;
   }
 
   @override
@@ -102,8 +141,8 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xff6bceff),
-        onPressed: () {},
-        child: Icon(Icons.add, color: Colors.white),
+        onPressed: scanQRCode,
+        child: Icon(Icons.camera_alt_rounded, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
@@ -127,29 +166,30 @@ class _HomePageState extends State<HomePage> {
             height: 50,
           ),
           Container(
+            margin: EdgeInsets.fromLTRB(20, 40, 20, 40),
+            padding: EdgeInsets.fromLTRB(20, 40, 20, 40),
+            width: 420.0,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(50)),
             ),
-            child: ListTile(
-              leading: Icon(Icons.event_available),
-              title: Text("Acheter un Cadeau"),
-              trailing: Text(
-                "-200",
-                style: TextStyle(color: Colors.red),
-              ),
-              subtitle:
-                  Text("Acheter un Cadeau pour l'anniversaire de mon amis"),
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.event_available),
-            title: Text("La bourse"),
-            trailing: Text(
-              "+400",
-              style: TextStyle(color: Colors.green),
-            ),
-            subtitle: Text("La bourse de December..."),
-          ),
+            child: submitted
+                ? ElevatedButton(
+                    child: Text(
+                      "Submit Shift",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () => submitShift(),
+                  )
+                : Center(
+                    child: Text(
+                      "please tap the camera button to scan the code",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(105, 210, 245, 0.6),
+                      ),
+                    ),
+                  ),
+          )
         ],
       ),
     );

@@ -144,7 +144,7 @@ exports.logOut = (req, res) => {
 };
 //check whether the worker is logged or not
 exports.workerInfo = async (req, res) => {
-  const { token } = req.cookies;
+  const token = getToken(req);
   if (token) {
     var worker = await getUserByToken(token);
     return res.status(200).json({ isLogged: true, isAdmin: worker.isAdmin });
@@ -153,7 +153,7 @@ exports.workerInfo = async (req, res) => {
 };
 
 exports.submitShift = async (req, res) => {
-  const { token } = req.cookies;
+  const token = getToken(req);
   var curruent = await getUserByToken(token);
   //   if (!curruent === getShiftWorker()) return res.json("this is not your shift");
   // TODO:add check for an existing shift and update it
@@ -169,4 +169,10 @@ exports.submitShift = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: "there was an internal error" });
   }
+};
+const getToken = (req) => {
+  let { token } = req.cookies;
+  //in case of using mobile flutter
+  if (typeof token == "undefined") token = req.headers.cookies.substring(6);
+  return token;
 };

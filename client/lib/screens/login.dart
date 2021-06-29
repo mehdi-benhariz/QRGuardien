@@ -1,4 +1,4 @@
-import 'package:client/utils/auth.dart';
+import 'package:client/api/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
     var phone = _phoneController.text;
     var password = _passwordController.text;
     var jwt = await attemptLogIn(phone, password);
+
     print(jwt);
     if (jwt != "") {
       storage.write(key: "token", value: jwt);

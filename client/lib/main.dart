@@ -2,6 +2,7 @@ import 'package:client/screens/adminPage.dart';
 import 'package:client/screens/home.dart';
 import 'package:client/screens/login.dart';
 import 'package:client/screens/signup.dart';
+//import 'package:client/api/auth.dart';
 import 'package:flutter/material.dart';
 
 void main() {

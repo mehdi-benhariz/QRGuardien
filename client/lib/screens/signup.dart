@@ -1,5 +1,5 @@
 import 'package:client/screens/home.dart';
-import 'package:client/utils/auth.dart';
+import 'package:client/api/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

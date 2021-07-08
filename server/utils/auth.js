@@ -16,3 +16,9 @@ exports.getUserByToken = async (token) => {
   const worker = await Worker.findById(decode.userId);
   return worker;
 };
+exports.getToken = (req) => {
+  let { token } = req.cookies;
+  //in case of using mobile flutter
+  if (typeof token == "undefined") token = req.headers.cookies.substring(6);
+  return token;
+};

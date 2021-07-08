@@ -2,6 +2,7 @@ import 'dart:convert';
 //import 'package:dio/dio.dart';
 
 import 'package:client/config/config.dart';
+import 'package:client/models/Worker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // ignore: import_of_legacy_library_into_null_safe
@@ -15,11 +16,24 @@ Future<String> get jwtOrEmpty async {
   return jwt;
 }
 
+Future<bool> get getIsAdmin async {
+  String? isAdminS = await storage.read(key: "isAdmin");
+  bool isAdmin = isAdminS!.toLowerCase() == 'true';
+  return isAdmin;
+}
+
+Future<Worker> get curruentUser async {
+  String? name = await storage.read(key: "name");
+  String? phone = await storage.read(key: "phone");
+  bool isAdmin = await getIsAdmin;
+  return new Worker(name!, phone!, "password", isAdmin);
+}
+
 Future<String> attemptLogIn(String phone, String password) async {
   String url = "$SERVER_IP/api/v1/worker/signin";
   String jwt = "";
   //just for testing
-  phone = "11111111";
+  phone = "00000000";
   password = "testtest";
   try {
     var res = await http.post(
@@ -29,11 +43,13 @@ Future<String> attemptLogIn(String phone, String password) async {
       },
       body: {"phone": phone, "password": password},
     );
-    print(res.statusCode);
-    var user = jsonDecode(res.body)["message"];
-    print(user);
+    var user = Worker.fromJson(jsonDecode(res.body)["message"]);
+    storage.write(key: "isAdmin", value: user.isAdmin.toString());
+
+    print(user.toString());
+    print(user.toJson());
+
     jwt = (res.headers["set-cookie"]!).split(";")[0].substring(6);
-    print(jwt);
     if (res.statusCode == 200) return jwt;
   } catch (e) {
     print(e);
@@ -47,6 +63,7 @@ Future<String> attemptSignUp(String name, String phone, String password,
   String url = "$SERVER_IP/api/v1/worker/signup";
   String jwt = "";
   try {
+    print("login");
     var res = await http.post(url, headers: <String, String>{
       'Context-Type': 'application/json;charSet=UTF-8'
     }, body: {

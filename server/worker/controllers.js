@@ -3,7 +3,7 @@ const Worker = require("../worker/model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { createJWT, getUserByToken } = require("../utils/auth");
-const { getShiftWorker } = require("../utils/shift");
+const { getShiftWorker, getToken } = require("../utils/shift");
 const phoneRegexp = /^[0-9]{8}$/;
 const maxAge = 3600 * 24 * 10;
 
@@ -150,29 +150,4 @@ exports.workerInfo = async (req, res) => {
     return res.status(200).json({ isLogged: true, isAdmin: worker.isAdmin });
   }
   return res.json({ isLogged: false });
-};
-
-exports.submitShift = async (req, res) => {
-  const token = getToken(req);
-  var curruent = await getUserByToken(token);
-  //   if (!curruent === getShiftWorker()) return res.json("this is not your shift");
-  // TODO:add check for an existing shift and update it
-  try {
-    var newShift = await new Shift({
-      date: Date.now(),
-      worker: curruent,
-      done: true,
-    });
-    newShift.save();
-    if (!newShift) return res.status(500).json({ error: "couldn't submit !" });
-    return res.status(200).json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: "there was an internal error" });
-  }
-};
-const getToken = (req) => {
-  let { token } = req.cookies;
-  //in case of using mobile flutter
-  if (typeof token == "undefined") token = req.headers.cookies.substring(6);
-  return token;
 };

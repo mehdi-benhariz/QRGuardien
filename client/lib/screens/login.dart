@@ -1,4 +1,5 @@
 import 'package:client/api/auth.dart';
+import 'package:client/screens/adminPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,16 +15,23 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _obscureText = false;
+  void handleShow() {
+    setState(() => _obscureText = !_obscureText);
+  }
+
   void handleLogin() async {
     var phone = _phoneController.text;
     var password = _passwordController.text;
     var jwt = await attemptLogIn(phone, password);
 
-    print(jwt);
     if (jwt != "") {
       storage.write(key: "token", value: jwt);
+      var isAdmin = await getIsAdmin;
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => isAdmin ? AdminPage() : HomePage()));
     } else
       displayDialog(context, "An Error Occurred",
           "No account was found matching that username and password");
@@ -121,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                         ]),
                     child: TextField(
                       controller: _passwordController,
-                      obscureText: true,
+                      obscureText: _obscureText,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         icon: Icon(
@@ -136,9 +144,27 @@ class _LoginPageState extends State<LoginPage> {
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 16, right: 32),
-                      child: Text(
-                        'Forgot Password ?',
-                        style: TextStyle(color: Colors.grey),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Forgot Password ?',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              // CheckboxListTile(
+                              //   title: Text("hide password"),
+                              //   onChanged: (bool? value) {
+                              //     setState(() {
+                              //       _obscureText = value!;
+                              //     });
+                              //   },
+                              //   value: _obscureText,
+                              // ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),

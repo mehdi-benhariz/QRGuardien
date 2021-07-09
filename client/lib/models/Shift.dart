@@ -1,6 +1,8 @@
+import 'package:client/models/Worker.dart';
+
 class Shift {
   final DateTime date;
-  final String worker;
+  final Worker worker;
   final bool done;
 
   Shift(this.date, this.worker, this.done);

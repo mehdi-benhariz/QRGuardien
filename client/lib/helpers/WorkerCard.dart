@@ -1,7 +1,13 @@
+import 'package:client/models/Shift.dart';
 import 'package:client/screens/shiftDetail.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class WorkerCard extends StatefulWidget {
+  final Shift shift;
+
+  const WorkerCard({Key? key, required this.shift}) : super(key: key);
+
   @override
   _WorkerCardState createState() => _WorkerCardState();
 }
@@ -18,7 +24,7 @@ class _WorkerCardState extends State<WorkerCard> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-      height: 220,
+      height: 166,
       width: double.maxFinite,
       child: Card(
         elevation: 5,
@@ -35,15 +41,15 @@ class _WorkerCardState extends State<WorkerCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 15),
+                        padding: const EdgeInsets.only(bottom: 10),
                         child: Text(
-                          "name",
+                          "${widget.shift.worker.name}",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 30),
                         ),
                       ),
                       Text(
-                        "date",
+                        "${DateFormat('yyyy-MM-dd').format(widget.shift.date)}",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
@@ -73,7 +79,15 @@ class _WorkerCardState extends State<WorkerCard> {
                 flex: 1,
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.25,
-                  decoration: BoxDecoration(color: Colors.blue),
+                  child: widget.shift.done
+                      ? Icon(
+                          Icons.done,
+                          color: Color.fromRGBO(11, 252, 3, 0.9),
+                        )
+                      : Icon(
+                          Icons.close,
+                          color: Color.fromRGBO(252, 3, 3, 0.9),
+                        ),
                 ),
               ),
             ],

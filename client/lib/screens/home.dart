@@ -1,6 +1,5 @@
 import 'package:client/api/shift.dart';
 import 'package:client/helpers/UX.dart';
-import 'package:client/screens/login.dart';
 import 'package:client/api/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,20 +13,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String qrCode = 'Unknown';
   bool submitted = true;
-  void handleLogOut() async {
-    if (!await checkInternet()) {
-      displayDialog(context, "impossible to log out!",
-          "you are not connected, please try to connect ot internet");
-      return;
-    }
-    bool res = await logout();
-    if (res)
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
-    else
-      displayDialog(context, "impossible to log out!",
-          "it seems there was an error when trying ot log out \n please verify your internet connection and try again");
-  }
 
   Future<void> scanQRCode() async {
     try {
@@ -105,7 +90,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              onTap: handleLogOut,
+              onTap: () => handleLogOut(this.context),
               leading: CircleAvatar(
                 child: Icon(
                   Icons.exit_to_app,

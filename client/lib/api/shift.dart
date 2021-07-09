@@ -41,7 +41,7 @@ Future<bool> allShifts() async {
     );
     print(res.statusCode);
 
-    if (res.statusCode == 200) return true;
+    if (res.statusCode == 200) print(res.body);
   } catch (e) {
     print(e);
   }

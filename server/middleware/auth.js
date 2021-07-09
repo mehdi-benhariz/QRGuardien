@@ -26,8 +26,8 @@ exports.auth = async (req, res, next) => {
 };
 
 exports.admin = async (req, res, next) => {
-  const { token } = req.cookies;
-  if (typeof token == "undefined") token = req.headers.cookies.substring(6);
+  var { token } = req.cookies;
+  if (typeof token == "undefined") token = req.headers?.cookies?.substring(6);
 
   try {
     const decode = await jwt.verify(token, process.env.TOKEN_SECRET);

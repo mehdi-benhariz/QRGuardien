@@ -1,3 +1,5 @@
+import 'package:client/api/shift.dart';
+import 'package:client/helpers/UX.dart';
 import 'package:client/helpers/WorkerCard.dart';
 import 'package:client/models/Shift.dart';
 import 'package:client/models/Worker.dart';
@@ -13,7 +15,12 @@ class AdminPage extends StatefulWidget {
 
 class _AdminPageState extends State<AdminPage> {
   Future<List<Shift>> fetchShifts() async {
-    return new List.filled(3, new Shift(new DateTime(2000), 'worker', false));
+    await allShifts();
+    return new List.filled(
+      3,
+      new Shift(new DateTime(2000),
+          new Worker("name", "phone", 'password', false), false),
+    );
   }
 
   @override
@@ -59,7 +66,7 @@ class _AdminPageState extends State<AdminPage> {
               },
             ),
             ListTile(
-              onTap: null,
+              onTap: () => handleLogOut(this.context),
               leading: CircleAvatar(
                 child: Icon(
                   Icons.exit_to_app,
@@ -84,7 +91,7 @@ class _AdminPageState extends State<AdminPage> {
                 physics: BouncingScrollPhysics(),
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext ctxt, int index) {
-                  return WorkerCard();
+                  return WorkerCard(shift: snapshot.data[index]);
                 },
               );
             } else {

@@ -1,4 +1,5 @@
 import 'package:client/api/shift.dart';
+import 'package:client/helpers/UX.dart';
 import 'package:client/screens/login.dart';
 import 'package:client/api/auth.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,11 @@ class _HomePageState extends State<HomePage> {
   String qrCode = 'Unknown';
   bool submitted = true;
   void handleLogOut() async {
+    if (!await checkInternet()) {
+      displayDialog(context, "impossible to log out!",
+          "you are not connected, please try to connect ot internet");
+      return;
+    }
     bool res = await logout();
     if (res)
       Navigator.push(
@@ -44,7 +50,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<bool> submitShift() async {
-    print("test");
     try {
       bool res = await attempSubmitShift();
       setState(() => submitted = res);
@@ -73,28 +78,6 @@ class _HomePageState extends State<HomePage> {
               ),
               accountName: Text('User Name'),
               accountEmail: Text('examlpe@gmail.com'),
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                child: Icon(
-                  Icons.person_outline,
-                  color: Colors.white,
-                  size: 30.0,
-                ),
-              ),
-              title: Text("Profile Settings"),
-              onTap: () {},
-            ),
-            ListTile(
-              leading: CircleAvatar(
-                child: Icon(
-                  Icons.settings,
-                  color: Colors.white,
-                  size: 30.0,
-                ),
-              ),
-              title: Text("Settings"),
-              onTap: () {},
             ),
             Divider(),
             ListTile(

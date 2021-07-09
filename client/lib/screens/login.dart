@@ -1,4 +1,5 @@
 import 'package:client/api/auth.dart';
+import 'package:client/helpers/UX.dart';
 import 'package:client/screens/adminPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +22,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void handleLogin() async {
+    if (!await checkInternet()) {
+      displayDialog(context, "impossible to log out!",
+          "you are not connected, please try to connect ot internet");
+      return;
+    }
+
     var phone = _phoneController.text;
     var password = _passwordController.text;
     var jwt = await attemptLogIn(phone, password);

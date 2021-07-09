@@ -4,7 +4,7 @@ const Worker = require("../worker/model");
 exports.auth = async (req, res, next) => {
   let { token } = req.cookies;
   //in case of using mobile flutter
-  if (typeof token == "undefined") token = req.headers.cookies.substring(6);
+  if (typeof token == "undefined") token = req.headers?.cookies?.substring(6);
 
   console.log(token);
   try {

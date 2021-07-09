@@ -4,6 +4,13 @@ const { getShiftWorker, getToken } = require("../utils/shift");
 exports.getShifts = async (req, res) => {
   try {
     var shifts = await Shift.find();
+    // result = [];
+    // shifts.forEach(async (shift) => {
+    //   result.push(shift);
+    //   const worker = await Worker.findById(shift.worker);
+    //   result[result.length - 1].worker = worker;
+    // });
+
     return res.status(200).json(shifts);
   } catch (error) {
     return res.status(500).json("internal error");

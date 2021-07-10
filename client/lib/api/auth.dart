@@ -2,6 +2,7 @@ import 'dart:convert';
 //import 'package:dio/dio.dart';
 
 import 'package:client/config/config.dart';
+import 'package:client/helpers/UX.dart';
 import 'package:client/models/Worker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -33,7 +34,7 @@ Future<String> attemptLogIn(String phone, String password) async {
   String url = "$SERVER_IP/api/v1/worker/signin";
   String jwt = "";
   //just for testing
-  phone = "00000000";
+  phone = "11111111";
   password = "testtest";
   try {
     var res = await http.post(
@@ -44,10 +45,7 @@ Future<String> attemptLogIn(String phone, String password) async {
       body: {"phone": phone, "password": password},
     );
     var user = Worker.fromJson(jsonDecode(res.body)["message"]);
-    storage.write(key: "isAdmin", value: user.isAdmin.toString());
-
-    print(user.toString());
-    print(user.toJson());
+    storeCurrentUser(user.name, user.isAdmin, user.phone);
 
     jwt = (res.headers["set-cookie"]!).split(";")[0].substring(6);
     if (res.statusCode == 200) return jwt;

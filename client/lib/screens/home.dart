@@ -1,6 +1,7 @@
 import 'package:client/api/shift.dart';
 import 'package:client/helpers/UX.dart';
 import 'package:client/api/auth.dart';
+import 'package:client/models/Worker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -11,10 +12,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late Worker _user;
+  void getInfo() async {
+    curruentUser.then((value) => setState(() => this._user = value));
+  }
+
   String qrCode = 'Unknown';
-  bool submitted = true;
+  bool submitted = false;
 
   Future<void> scanQRCode() async {
+    print('test qr');
     try {
       final qrCode = await FlutterBarcodeScanner.scanBarcode(
         '#ff6666',
@@ -28,7 +35,7 @@ class _HomePageState extends State<HomePage> {
       qrCode = 'Failed to get platform version.';
     }
     if (!mounted) return;
-
+    print(qrCode);
     setState(() {
       this.qrCode = qrCode;
     });
@@ -48,6 +55,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    this.getInfo();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
@@ -61,8 +75,8 @@ class _HomePageState extends State<HomePage> {
                   size: 50.0,
                 ),
               ),
-              accountName: Text('User Name'),
-              accountEmail: Text('examlpe@gmail.com'),
+              accountName: Text(_user.name),
+              accountEmail: Text(_user.phone),
             ),
             Divider(),
             ListTile(

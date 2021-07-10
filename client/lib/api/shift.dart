@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:client/api/auth.dart';
 import 'package:client/config/config.dart';
+import 'package:client/models/Shift.dart';
+import 'package:client/models/Worker.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:http/http.dart' as http;
 
@@ -26,11 +30,12 @@ Future<bool> attempSubmitShift() async {
   return false;
 }
 
-Future<bool> allShifts() async {
+Future<List<Shift>> allShifts() async {
   String url = "$SERVER_IP/api/v1/shift/all";
   String jwt = "";
   jwt = await jwtOrEmpty;
-  print("shift");
+  List<Shift> shifts = [];
+
   try {
     var res = await http.post(
       url,
@@ -41,12 +46,21 @@ Future<bool> allShifts() async {
     );
     print(res.statusCode);
 
-    if (res.statusCode == 200) print(res.body);
+    // if (res.statusCode == 200) print(jsonDecode(res.body));
+    var body = jsonDecode(res.body);
+    for (var i = 0; i < body.length; i++) {
+      Worker newWorker = new Worker(body[i]["worker"]["name"],
+          body[i]["worker"]["phone"], "password", false);
+
+      DateTime date = DateTime.parse(body[i]["date"]);
+      bool done = body[i]["done"];
+      Shift newShift = new Shift(date, newWorker, done);
+      shifts.add(newShift);
+    }
   } catch (e) {
     print(e);
   }
-
-  return false;
+  return shifts;
 }
 
 Future<bool> removeShift(String id) async {

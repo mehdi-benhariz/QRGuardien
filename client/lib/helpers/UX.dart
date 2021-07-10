@@ -28,3 +28,16 @@ void handleLogOut(BuildContext context) async {
     displayDialog(context, "impossible to log out!",
         "it seems there was an error when trying ot log out \n please verify your internet connection and try again");
 }
+
+void storeCurrentUser(String name, bool isAdmin, String phone) {
+  storage.write(key: "name", value: name);
+  storage.write(key: "phone", value: phone);
+  storage.write(key: "isAdmin", value: isAdmin.toString());
+}
+
+Future<String> get getCurruentUser async {
+  String? name = await storage.read(key: "name");
+
+  if (name == null) return "";
+  return name;
+}

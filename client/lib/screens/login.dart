@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void handleLogin() async {
     if (!await checkInternet()) {
-      displayDialog(context, "impossible to log out!",
+      displayDialog(context, "impossible to log in!",
           "you are not connected, please try to connect ot internet");
       return;
     }

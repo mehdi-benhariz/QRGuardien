@@ -24,7 +24,7 @@ class _WorkerCardState extends State<WorkerCard> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-      height: 166,
+      height: 170,
       width: double.maxFinite,
       child: Card(
         elevation: 5,
@@ -40,13 +40,10 @@ class _WorkerCardState extends State<WorkerCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Text(
-                          "${widget.shift.worker.name}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 30),
-                        ),
+                      Text(
+                        "${widget.shift.worker.name}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       Text(
                         "${DateFormat('yyyy-MM-dd').format(widget.shift.date)}",

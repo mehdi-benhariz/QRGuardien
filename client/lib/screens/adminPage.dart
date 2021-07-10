@@ -1,9 +1,11 @@
+import 'package:client/api/auth.dart';
 import 'package:client/api/shift.dart';
 import 'package:client/helpers/UX.dart';
 import 'package:client/helpers/WorkerCard.dart';
 import 'package:client/models/Shift.dart';
 import 'package:client/models/Worker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 //import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class AdminPage extends StatefulWidget {
@@ -14,13 +16,22 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
+  late Worker _user;
+  void getInfo() async {
+    curruentUser.then((value) => setState(() => this._user = value));
+  }
+
   Future<List<Shift>> fetchShifts() async {
-    await allShifts();
-    return new List.filled(
-      3,
-      new Shift(new DateTime(2000),
-          new Worker("name", "phone", 'password', false), false),
-    );
+    List<Shift> shifts = await allShifts();
+    print(shifts[0].done);
+    return shifts;
+  }
+
+  @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    this.getInfo();
+    super.initState();
   }
 
   @override
@@ -37,8 +48,8 @@ class _AdminPageState extends State<AdminPage> {
                   size: 50.0,
                 ),
               ),
-              accountName: Text('User Name'),
-              accountEmail: Text('examlpe@gmail.com'),
+              accountName: Text(_user.name),
+              accountEmail: Text(_user.phone),
             ),
             Divider(),
             ListTile(

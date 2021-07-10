@@ -6,6 +6,10 @@ class Shift {
   final bool done;
 
   Shift(this.date, this.worker, this.done);
+  Worker getWorker() {
+    return this.worker;
+  }
+
   Shift.fromJson(Map<String, dynamic> json)
       : date = json['date'],
         worker = json['worker'],

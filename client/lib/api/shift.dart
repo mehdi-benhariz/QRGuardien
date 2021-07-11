@@ -8,10 +8,10 @@ import 'package:client/models/Worker.dart';
 import 'package:http/http.dart' as http;
 
 Future<bool> attempSubmitShift() async {
-  String url = "$SERVER_IP/api/v1/worker/submitShift";
+  String url = "$SERVER_IP/api/v1/shift/submitShift";
   String jwt = "";
   jwt = await jwtOrEmpty;
-  print("shift");
+  print("shift" + jwt);
   try {
     var res = await http.post(
       url,

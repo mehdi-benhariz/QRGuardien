@@ -2,8 +2,8 @@ const Worker = require("../worker/model");
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { createJWT, getUserByToken } = require("../utils/auth");
-const { getShiftWorker, getToken } = require("../utils/shift");
+const { createJWT, getUserByToken, getToken } = require("../utils/auth");
+const { getShiftWorker } = require("../utils/shift");
 const phoneRegexp = /^[0-9]{8}$/;
 const maxAge = 3600 * 24 * 10;
 

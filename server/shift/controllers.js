@@ -1,17 +1,18 @@
 const Shift = require("../shift/model");
-const { getShiftWorker, getToken } = require("../utils/shift");
+const { getShiftWorker } = require("../utils/shift");
+const { createJWT, getUserByToken, getToken } = require("../utils/auth");
 
 exports.getShifts = async (req, res) => {
   try {
     var shifts = await Shift.find();
-    // result = [];
-    // shifts.forEach(async (shift) => {
-    //   result.push(shift);
-    //   const worker = await Worker.findById(shift.worker);
-    //   result[result.length - 1].worker = worker;
-    // });
-
-    return res.status(200).json(shifts);
+    let result = [];
+    for (let i = 0; i < shifts.length; i++) {
+      var shift = shifts[i];
+      const worker = await Worker.findById(shift.worker);
+      shift["worker"] = worker;
+      result.push(shift);
+    }
+    return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json("internal error");
   }
@@ -45,11 +46,20 @@ exports.updateShift = async (req, res) => {
     res.status(500).json({ error: "there was internal error" });
   }
 };
+function getDifferenceInDays(date1, date2) {
+  const diffInMs = Math.abs(date2 - date1);
+  return diffInMs / (1000 * 60 * 60 * 24);
+}
 exports.submitShift = async (req, res) => {
   const token = getToken(req);
+
   var curruent = await getUserByToken(token);
-  //   if (!curruent === getShiftWorker()) return res.json("this is not your shift");
+  //   if (curruent !== getShiftWorker()) return res.json("this is not your shift");
   // TODO:add check for an existing shift and update it
+  const lastOne = await Shift.findOne({ worker: curruent._id });
+  if (lastOne && getDifferenceInDays(lastOne.date, new Date(Date.now())) > 1)
+    return res.status(400).json("too late to submit");
+
   try {
     var newShift = await new Shift({
       date: Date.now(),

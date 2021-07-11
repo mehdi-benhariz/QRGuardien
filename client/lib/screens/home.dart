@@ -17,28 +17,30 @@ class _HomePageState extends State<HomePage> {
     curruentUser.then((value) => setState(() => this._user = value));
   }
 
-  String qrCode = 'Unknown';
+  String _qrCode = 'Unknown';
   bool submitted = false;
 
-  Future<void> scanQRCode() async {
-    print('test qr');
-    try {
-      final qrCode = await FlutterBarcodeScanner.scanBarcode(
-        '#ff6666',
-        'Cancel',
-        true,
-        ScanMode.QR,
-      );
-      print(qrCode);
-      // ignore: nullable_type_in_catch_clause
-    } on PlatformException {
-      qrCode = 'Failed to get platform version.';
-    }
-    if (!mounted) return;
-    print(qrCode);
-    setState(() {
-      this.qrCode = qrCode;
-    });
+  Future<void> scanQR() async {
+    String barcodeScanRes;
+    await submitShift();
+
+    // try {
+    //   barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+    //       '#ff6666', 'Cancel', true, ScanMode.QR);
+    // } on PlatformException {
+    //   barcodeScanRes = 'Failed to get platform version.';
+    // }
+    // print("qrcode = " + barcodeScanRes);
+
+    // // If the widget was removed from the tree while the asynchronous platform
+    // // message was in flight, we want to discard the reply rather than calling
+    // // setState to update our non-existent appearance.
+    // if (!mounted) return;
+
+    // setState(() {
+    //   _qrCode = barcodeScanRes;
+    //   submitted = barcodeScanRes == "test image" ? true : false;
+    // });
   }
 
   Future<bool> submitShift() async {
@@ -123,7 +125,7 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xff6bceff),
-        onPressed: scanQRCode,
+        onPressed: scanQR,
         child: Icon(Icons.camera_alt_rounded, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -157,7 +159,7 @@ class _HomePageState extends State<HomePage> {
             child: submitted
                 ? ElevatedButton(
                     child: Text(
-                      "Submit Shift",
+                      "Submit Shift $_qrCode",
                       style: TextStyle(fontSize: 20),
                     ),
                     onPressed: () => submitShift(),
